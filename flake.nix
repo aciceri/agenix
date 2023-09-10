@@ -31,6 +31,9 @@
     homeManagerModules.age = import ./modules/age-home.nix;
     homeManagerModules.default = self.homeManagerModules.age;
 
+    flakeModules.age = import ./modules/age-flake-parts.nix;
+    flakeModules.default = self.flakeModules.age;
+
     overlays.default = import ./overlay.nix;
 
     formatter.x86_64-darwin = nixpkgs.legacyPackages.x86_64-darwin.alejandra;
