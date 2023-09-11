@@ -38,7 +38,7 @@ in {
     };
     secretsPath = mkOption {
       type = types.str; # TODO or path?
-      default = ''$XDG_RUNTIME_DIR/agenix-shell/$(git rev-parse --show-toplevel | xargs basename)/${builtins.hashString "sha256" self.outPath}'';
+      default = ''/run/user/$(id -u)/agenix-shell/$(git rev-parse --show-toplevel | xargs basename)/${builtins.hashString "sha256" self.outPath}'';
     };
     identityPaths = mkOption {
       type = types.listOf types.str; # TODO or path?
@@ -91,8 +91,11 @@ in {
           )
 
           chmod ${secret.mode} "${secret.path}"
-          # shellcheck disable=SC2034,SC2016
-          ${lib.toShellVar secret.name secret.path}
+
+          AGENIX_${secret.name}_PATH="${secret.path}"
+          AGENIX_${secret.name}=$(cat "$AGENIX_${secret.name}_PATH")
+          export AGENIX_${secret.name}_PATH
+          export AGENIX_${secret.name}
         '';
       };
       installationScript = mkOption {
